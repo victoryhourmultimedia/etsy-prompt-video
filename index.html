@@ -1,0 +1,390 @@
+
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 260px;
+    background: #06090f;
+    border-radius: 32px;
+    border: 6px solid #1a1a2e;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px #333;
+  }
+  .screen {
+    width: 100%;
+    aspect-ratio: 9/16;
+    background: #06090f;
+    position: relative;
+    overflow: hidden;
+  }
+  .scene-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .scene-slide.active { opacity: 1; }
+
+  .sc-tag {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #C9A84C;
+    margin-bottom: 10px;
+    font-family: monospace;
+    opacity: 0.8;
+  }
+  .sc-main {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.25;
+    color: #f0e6cc;
+    margin-bottom: 10px;
+  }
+  .sc-main .gold { color: #C9A84C; }
+  .sc-sub {
+    font-size: 11px;
+    color: rgba(240,230,204,0.55);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .sc-badge {
+    background: #C9A84C;
+    color: #06090f;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-top: 12px;
+  }
+  .sc-divider {
+    width: 40px; height: 2px;
+    background: #C9A84C;
+    margin: 10px auto;
+    border-radius: 1px;
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 2px; height: 16px;
+    background: #C9A84C;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .prompt-box {
+    background: rgba(11,29,58,0.8);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .prompt-line {
+    font-size: 9px;
+    color: rgba(240,230,204,0.6);
+    line-height: 1.6;
+    font-family: monospace;
+  }
+  .prompt-line .hl { color: #C9A84C; }
+
+  .pdf-cover {
+    background: linear-gradient(160deg, #0B1D3A 0%, #06090f 100%);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 8px;
+    padding: 16px 14px;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .pdf-title { font-size: 11px; font-weight: 700; color: #C9A84C; line-height: 1.4; margin-bottom: 6px; }
+  .pdf-bar { height: 1px; background: rgba(201,168,76,0.3); margin: 6px 0; }
+  .pdf-cat { font-size: 8px; color: rgba(240,230,204,0.5); margin: 3px 0; }
+
+  .stars { color: #C9A84C; font-size: 12px; margin-bottom: 6px; }
+  .review-text { font-size: 10px; font-style: italic; color: rgba(240,230,204,0.7); text-align:center; line-height: 1.5; }
+
+  .price-big { font-size: 36px; font-weight: 900; color: #C9A84C; line-height: 1; }
+  .price-label { font-size: 9px; color: rgba(240,230,204,0.5); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
+
+  .link-arrow {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 14px;
+    font-size: 10px; color: #C9A84C;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .arrow-up {
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #C9A84C;
+  }
+
+  .vh-logo { font-size: 8px; letter-spacing: 0.2em; color: rgba(201,168,76,0.5); text-transform: uppercase; margin-top: 12px; }
+
+  .scene1-bg { background: #06090f; }
+  .scene2-bg { background: #06090f; }
+  .scene3-bg { background: #06090f; }
+  .scene4-bg { background: #06090f; }
+  .scene5-bg { background: #06090f; }
+  .scene6-bg { background: linear-gradient(180deg, #0B1D3A 0%, #06090f 100%); }
+
+  .progress-track {
+    width: 248px;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin: 0 auto 6px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #C9A84C;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0 4px;
+  }
+  .ctrl-btn {
+    background: transparent;
+    border: 0.5px solid var(--color-border-secondary);
+    color: var(--color-text-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .ctrl-btn:hover { background: var(--color-background-secondary); }
+  .scene-counter {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .info-panel {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    padding-top: 2rem;
+  }
+  .info-scene-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+  }
+  .info-scene-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 10px;
+  }
+  .info-timing {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+  }
+  .info-vo {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-text-primary);
+    border-left: 2px solid #C9A84C;
+    padding-left: 12px;
+    margin-bottom: 14px;
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .info-text-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+  .info-text-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-background-secondary);
+    padding: 8px 12px;
+    border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+</style>
+
+<div class="phone-wrap">
+
+  <div>
+    <div class="phone">
+      <div class="screen">
+
+        <div class="scene-slide scene1-bg active" id="sc1">
+          <div class="sc-tag">Scene 01 — The hook</div>
+          <div style="background:rgba(11,29,58,0.6);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:14px;width:100%;margin-bottom:12px;">
+            <div style="font-size:8px;color:rgba(240,230,204,0.4);margin-bottom:6px;font-family:monospace;">ChatGPT</div>
+            <div style="font-size:11px;color:rgba(240,230,204,0.5);font-style:italic;">Message ChatGPT<span class="cursor-blink"></span></div>
+          </div>
+          <div class="sc-main">You open ChatGPT.<br>You stare.<br><span class="gold">Nothing.</span></div>
+          <div class="sc-divider"></div>
+          <div class="sc-sub">Sound familiar?</div>
+        </div>
+
+        <div class="scene-slide scene2-bg" id="sc2">
+          <div class="sc-tag">Scene 02 — The pain</div>
+          <div class="sc-main">Most Etsy sellers waste <span class="gold">hours</span> writing listings, captions & emails.</div>
+          <div class="sc-divider"></div>
+          <div class="sc-sub">While competitors scale effortlessly.</div>
+          <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;">
+            <div style="background:rgba(235,87,87,0.1);border:1px solid rgba(235,87,87,0.2);border-radius:6px;padding:8px;text-align:center;">
+              <div style="font-size:16px;font-weight:700;color:#eb5757;">0</div>
+              <div style="font-size:8px;color:rgba(240,230,204,0.4);">Sales this week</div>
+            </div>
+            <div style="background:rgba(111,207,151,0.1);border:1px solid rgba(111,207,151,0.2);border-radius:6px;padding:8px;text-align:center;">
+              <div style="font-size:16px;font-weight:700;color:#6fcf97;">47</div>
+              <div style="font-size:8px;color:rgba(240,230,204,0.4);">Competitor sales</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;font-weight:700;color:#C9A84C;">There's a smarter way.</div>
+        </div>
+
+        <div class="scene-slide scene3-bg" id="sc3">
+          <div class="sc-tag">Scene 03 — The reveal</div>
+          <div class="pdf-cover">
+            <div class="pdf-title">100 AI Prompts for<br>Etsy Shop Success</div>
+            <div class="pdf-bar"></div>
+            <div class="pdf-cat">Product Listings</div>
+            <div class="pdf-cat">Social Media</div>
+            <div class="pdf-cat">Email Marketing</div>
+            <div class="pdf-cat">Content Creation</div>
+            <div class="pdf-cat">Business Strategy</div>
+            <div class="pdf-bar"></div>
+            <div style="font-size:7px;color:rgba(201,168,76,0.5);letter-spacing:0.15em;">VICTORY HOUR MULTIMEDIA</div>
+          </div>
+          <div class="sc-main" style="margin-top:10px;font-size:13px;">100 <span class="gold">copy-paste</span> AI templates for your Etsy shop.</div>
+          <div class="sc-badge">Instant download</div>
+        </div>
+
+        <div class="scene-slide scene4-bg" id="sc4">
+          <div class="sc-tag">Scene 04 — The proof</div>
+          <div class="sc-main" style="font-size:14px;margin-bottom:8px;">5 categories. <span class="gold">100 prompts.</span></div>
+          <div style="width:100%;">
+            <div class="prompt-box">
+              <div class="prompt-line"><span class="hl">Listing SEO</span> — 20 prompts</div>
+              <div class="prompt-line"><span class="hl">Social Media</span> — 20 prompts</div>
+              <div class="prompt-line"><span class="hl">Email Marketing</span> — 20 prompts</div>
+              <div class="prompt-line"><span class="hl">Content</span> — 20 prompts</div>
+              <div class="prompt-line"><span class="hl">Strategy</span> — 20 prompts</div>
+            </div>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="sc-sub">Works with ChatGPT & Claude.<br>No experience needed.</div>
+        </div>
+
+        <div class="scene-slide scene5-bg" id="sc5">
+          <div class="sc-tag">Scene 05 — Social proof</div>
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="review-text">"I wrote my entire shop in one afternoon. These prompts are gold."</div>
+          <div style="font-size:8px;color:rgba(240,230,204,0.3);margin-top:4px;">— Verified Etsy buyer</div>
+          <div class="sc-divider"></div>
+          <div class="sc-main" style="font-size:13px;">Write a <span class="gold">month of content</span><br>in an afternoon.</div>
+          <div class="sc-sub" style="margin-top:8px;">Instant download. Use it today.</div>
+        </div>
+
+        <div class="scene-slide scene6-bg" id="sc6">
+          <div class="sc-tag">Scene 06 — Get it now</div>
+          <div class="sc-main" style="font-size:13px;margin-bottom:6px;">100 AI Prompts for<br><span class="gold">Etsy Shop Success</span></div>
+          <div class="price-big">$12.97</div>
+          <div class="price-label">Instant download · No shipping</div>
+          <div class="sc-divider"></div>
+          <div class="sc-badge">Get it on Etsy now</div>
+          <div class="link-arrow">
+            <div class="arrow-up"></div>
+            Link in bio
+          </div>
+          <div class="vh-logo">Victory Hour Multimedia</div>
+        </div>
+
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="prog" style="width:16.6%"></div>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn" id="prevBtn">&#8592;</button>
+        <span class="scene-counter" id="sceneCounter">1 / 6</span>
+        <button class="ctrl-btn" id="nextBtn">&#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <div class="info-scene-label" id="info-label">Scene 01 of 06</div>
+    <div class="info-scene-title" id="info-title">The hook</div>
+    <div class="info-timing" id="info-timing">0:00 – 0:08</div>
+    <div class="info-vo" id="info-vo">You open ChatGPT. You stare at the blank box. And you have absolutely no idea what to type.</div>
+    <div class="info-text-label">On-screen text</div>
+    <div class="info-text-val" id="info-text">Sound familiar?</div>
+  </div>
+
+</div>
+
+<script>
+const scenes = [
+  { title:'The hook', timing:'0:00 – 0:08', vo:'You open ChatGPT. You stare at the blank box. And you have absolutely no idea what to type.', text:'Sound familiar?' },
+  { title:'The pain', timing:'0:08 – 0:18', vo:'Most Etsy sellers spend hours trying to write listings, captions, and emails — getting nowhere. While their competitors are scaling effortlessly.', text:'There\'s a smarter way.' },
+  { title:'The reveal', timing:'0:18 – 0:28', vo:'Introducing 100 AI Prompts for Etsy Shop Success — 100 copy-paste templates that tell AI exactly what to write for your shop.', text:'100 done-for-you AI prompts. Instant download.' },
+  { title:'The proof', timing:'0:28 – 0:42', vo:'20 prompts for product listings that rank higher. 20 for social media. 20 for emails that convert. 20 for content. 20 for strategy. All tested. All ready.', text:'Works with ChatGPT & Claude. No experience needed.' },
+  { title:'Social proof', timing:'0:42 – 0:52', vo:'Etsy sellers are using these right now to write a month of content in an afternoon. Instant download. Use it today.', text:'"I wrote my entire shop in one afternoon." ★★★★★' },
+  { title:'Get it now', timing:'0:52 – 1:00', vo:'100 AI Prompts for Etsy Shop Success. Just $12.97. Instant download. Link in bio — or search it on Etsy right now.', text:'Get instant access → $12.97 · Link in bio' }
+];
+
+let current = 0;
+
+function goTo(n) {
+  document.getElementById('sc'+(current+1)).classList.remove('active');
+  current = (n + 6) % 6;
+  document.getElementById('sc'+(current+1)).classList.add('active');
+  document.getElementById('prog').style.width = ((current+1)/6*100)+'%';
+  document.getElementById('sceneCounter').textContent = (current+1)+' / 6';
+  document.getElementById('info-label').textContent = 'Scene 0'+(current+1)+' of 06';
+  document.getElementById('info-title').textContent = scenes[current].title;
+  document.getElementById('info-timing').textContent = scenes[current].timing;
+  document.getElementById('info-vo').textContent = scenes[current].vo;
+  document.getElementById('info-text').textContent = scenes[current].text;
+}
+
+document.getElementById('nextBtn').onclick = () => goTo(current+1);
+document.getElementById('prevBtn').onclick = () => goTo(current-1);
+
+let autoTimer = setInterval(() => goTo(current+1), 3000);
+document.getElementById('nextBtn').onclick = () => { clearInterval(autoTimer); goTo(current+1); };
+document.getElementById('prevBtn').onclick = () => { clearInterval(autoTimer); goTo(current-1); };
+</script>
